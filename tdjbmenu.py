@@ -50,7 +50,6 @@ def play_song(file_name, canvas):
     :param file_name: The name of the text file that stores note information
     :param canvas: The window on which the menus are presented.
     """
-    canvas.delete('all')  # All extraneous canvas objects are deleted
 
     clock = 0  # Initialize counter that triggers each beat, then is reset to 0
     index = 0  # Start reading notes at index 0
@@ -189,8 +188,8 @@ def make_start_screen(canvas):
     canvas.delete('all')
     title_font = tkinter.font.Font(family='Times', size=36)
     canvas.create_text(300, 200, text='Text Doc Jukebox', font=title_font)
-    start_button = tkinter.Button(canvas, text='Start', command=lambda: make_menu_screen(canvas), padx=50, pady=20,
-                                  activeforeground='blue')
+    start_button = tkinter.Button(canvas, text='Start', command=lambda: [make_menu_screen(canvas),
+                                  start_button.destroy()], padx=50, pady=20, activeforeground='blue')
     start_button.place(x=220, y=600)
 
 
@@ -209,14 +208,28 @@ def make_menu_screen(canvas):
     back_button = tkinter.Button(canvas, text='Back to Title', command=lambda:
                     [make_start_screen(canvas), delete_menu(menu_items)], padx=20, pady=10, activeforeground='red')
     back_button.place(x=10, y=10)
-    menu_items = [sb1, sb2, sb3, back_button]
+    credits_button = tkinter.Button(canvas, text='Credits', command=lambda:
+                    [delete_menu(menu_items), make_credits(canvas)], padx=20, pady=10)
+    credits_button.place(x=500, y=10)
+    menu_items = [sb1, sb2, sb3, back_button, credits_button]
+
+
+def make_credits(canvas):
+    canvas.delete('all')
+    credits_font = tkinter.font.Font(family='Times', size='16')
+    credits_text = 'Text Doc Jukebox\nBy: Philip Baillargeon\n\nSongs Used:\nIrish Tune (Traditional),\nStrauss Wind ' \
+                   'Serenade by Richard Strauss,\nNever Gonna Give You Up by Rick Astley\n\nCredit To:\npyFluidsynth b'\
+                   'y Nathan Whitehead\nTkinter\n\nThanks for Listening!'
+    canvas.create_text(300, 400, font=credits_font, text=credits_text)
+    canvas.update()
+    select_song(canvas, 'tdjbmaintheme.txt')
+    make_menu_screen(canvas)
 
 
 def delete_menu(button_list):
     """
     All buttons on the current screen are removed.
     :param button_list: The list of Tkinter buttons on the current screen
-    :return:
     """
     for button in button_list:
         button.destroy()
